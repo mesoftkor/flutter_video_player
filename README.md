@@ -1,16 +1,6 @@
-# video_player_test
 
-A new Flutter project.
+Video_player를 이용하여 영상 플레이어 구현
+[V](https://pub.dev/packages/video_player)
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![video_player](https://github.com/mesoftkor/flutter_video_player/assets/56785952/61bcb3ec-889d-4447-8952-2260446b813e)
