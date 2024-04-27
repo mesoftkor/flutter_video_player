@@ -1,7 +1,6 @@
 import 'dart:ui_web';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 void main() {
@@ -41,17 +40,30 @@ class _MyHomePageState extends State<VideoApp> {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(
         'https://vt.tumblr.com/tumblr_o600t8hzf51qcbnq0_480.mp4')) //샘플 영상 주소
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
+      ..initialize().then((value) => {
+            _controller.addListener(() {
+              //custom Listner
+              setState(() {
+                if (!_controller.value.isPlaying &&
+                    _controller.value.isInitialized &&
+                    (_controller.value.duration ==
+                        _controller.value.position)) {
+                  //checking the duration and position every time
+                  setState(() {});
+                }
+              });
+            })
+          });
+    _controller.addListener(() {
+      setState() {}
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
+        child: Stack(
           children: [
             _controller.value.isInitialized
                 ? AspectRatio(
@@ -60,6 +72,24 @@ class _MyHomePageState extends State<VideoApp> {
                 : Container(),
             const SizedBox(
               height: 5,
+            ),
+            Positioned(
+                child: Slider(
+                    min: 0,
+                    value: _controller.value.position.inSeconds.toDouble(),
+                    max: _controller.value.duration.inSeconds.toDouble(),
+                    onChanged: (double positionValue) {
+                      _controller
+                          .seekTo(Duration(seconds: positionValue.toInt()));
+                    })),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height - 50,
+              child: Center(
+                child: Text(
+                    '${_controller.value.position.toString().substring(0, 7)} / ${_controller.value.duration.toString().substring(0, 7)}',
+                    style: TextStyle(color: Colors.white, fontSize: 30)),
+              ),
             ),
             Flex(
               mainAxisSize: MainAxisSize.max,
@@ -73,7 +103,7 @@ class _MyHomePageState extends State<VideoApp> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(_controller.value.isPlaying
+                  icon: Icon(!_controller.value.isPlaying
                       ? Icons.play_arrow
                       : Icons.stop),
                   onPressed: () {
@@ -97,15 +127,6 @@ class _MyHomePageState extends State<VideoApp> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            _controller.value.isPlaying
-                ? _controller.pause()
-                : _controller.play();
-          });
-        },
       ),
     );
   }
