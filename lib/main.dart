@@ -1,5 +1,3 @@
-import 'dart:ui_web';
-
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -34,29 +32,14 @@ class VideoApp extends StatefulWidget {
 
 class _MyHomePageState extends State<VideoApp> {
   late VideoPlayerController _controller;
-
+  //rtsp://210.99.70.120:1935/live/cctv003.stream
+  //https://vt.tumblr.com/tumblr_o600t8hzf51qcbnq0_480.mp4
+  //http://210.99.70.120:1935/live/cctv002.stream/playlist.m3u8
+  //rtmp://210.99.70.120/live/cctv002.stream
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(Uri.parse(
-        'https://vt.tumblr.com/tumblr_o600t8hzf51qcbnq0_480.mp4')) //샘플 영상 주소
-      ..initialize().then((value) => {
-            _controller.addListener(() {
-              //custom Listner
-              setState(() {
-                if (!_controller.value.isPlaying &&
-                    _controller.value.isInitialized &&
-                    (_controller.value.duration ==
-                        _controller.value.position)) {
-                  //checking the duration and position every time
-                  setState(() {});
-                }
-              });
-            })
-          });
-    _controller.addListener(() {
-      setState() {}
-    });
+    startPlay('rtmp://210.99.70.120/live/cctv002.stream');
   }
 
   @override
@@ -129,6 +112,28 @@ class _MyHomePageState extends State<VideoApp> {
         ),
       ),
     );
+  }
+
+  Future<void> startPlay(String strUri) async {
+    if (strUri == '') return;
+    _controller = VideoPlayerController.networkUrl(Uri.parse(strUri)) //샘플 영상 주소
+      ..initialize().then((value) => {
+            _controller.addListener(() {
+              //custom Listner
+              setState(() {
+                if (!_controller.value.isPlaying &&
+                    _controller.value.isInitialized &&
+                    (_controller.value.duration ==
+                        _controller.value.position)) {
+                  //checking the duration and position every time
+                  setState(() {});
+                }
+              });
+            })
+          });
+    _controller.addListener(() {
+      setState() {}
+    });
   }
 
   Future<void> seekTo(Duration position) async {
